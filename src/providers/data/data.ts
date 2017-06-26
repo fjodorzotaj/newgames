@@ -11,7 +11,7 @@ import 'rxjs/add/operator/map';
 @Injectable()
 export class DataProvider {
 
-  headers = new Headers({'X-Mashape-Key': '6fOOmlsIV8mshx7vicZBInXT04m3p1Z5iHLjsnILnVJLDjvbRT'});
+  headers = new Headers({'X-Mashape-Key': 'zrb3X3OTYXmshypugXno77cYCTPSp1OsdJrjsnBtlG7BO73RlT'});
   options = new RequestOptions({ headers: this.headers });
   limit:number = 50;
 
@@ -25,6 +25,44 @@ export class DataProvider {
     let offset = offset_num;
 
     return this.http.get('https://igdbcom-internet-game-database-v1.p.mashape.com/games/?fields=name,release_dates,screenshots&limit='+this.limit+'&offset='+offset+'&order=release_dates.date:desc&filter[genres][eq]='+genre_id+'&filter[screenshots][exists]', this.options)
+      .map(response => response.json());
+
+  }
+
+  getFavorites(favs) {
+
+    let favorites = favs;
+    favorites = favorites.join();
+
+    return this.http.get('https://igdbcom-internet-game-database-v1.p.mashape.com/games/'+favorites+'?fields=name,release_dates,screenshots&order=release_dates.date:desc&filter[screenshots][exists]', this.options)
+      .map(response => response.json());
+  }
+
+  getGenres() {
+    return this.http.get('https://igdbcom-internet-game-database-v1.p.mashape.com/genres/?fields=*', this.options)
+      .map(response => response.json());
+  }
+
+  getGame(game) {
+    let game_id = game;
+
+    return this.http.get('https://igdbcom-internet-game-database-v1.p.mashape.com/games/'+game_id+'?fields=*', this.options)
+      .map(response => response.json());
+  }
+
+  getPerspective(perspective) {
+    let persp_id = perspective;
+
+    return this.http.get('https://igdbcom-internet-game-database-v1.p.mashape.com/player_perspectives/'+persp_id+'?fields=*', this.options)
+      .map(response => response.json());
+
+  }
+
+  searchGames(kw) {
+
+    let keyword = kw;
+
+    return this.http.get('https://igdbcom-internet-game-database-v1.p.mashape.com/games/?fields=name,release_dates,screenshots&limit='+this.limit+'&offset=0&order=release_dates.date:desc&search='+keyword, this.options)
       .map(response => response.json());
 
   }
